@@ -3,7 +3,7 @@
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 class Plugin {
-	public const SETTINGS_KEY = 'action_scheduler_tools_settings';
+	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
 
 	public function __construct(
 		public readonly string $plugin_url,
@@ -53,7 +53,7 @@ class Plugin {
 	public function do_save_settings( array|null $post_data = null ): void {
 		$post_data = (array) ( $post_data ?? $_POST );
 
-		if ( ! wp_verify_nonce( $post_data['nonce'], 'action-scheduler-tools' ) ) {
+		if ( ! wp_verify_nonce( $post_data['nonce'], 'action-scheduler-tools' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error();
 			return;
 		}
