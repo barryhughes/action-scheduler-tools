@@ -14,6 +14,7 @@ namespace Automattic\Chronos\Action_Scheduler_Tools;
 function setup(): void {
 	require __DIR__ . '/php/Filters.php';
 	require __DIR__ . '/php/Plugin.php';
+	require __DIR__ . '/php/Settings.php';
 }
 
 function plugin(): Plugin {

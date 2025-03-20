@@ -4,11 +4,14 @@ namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 class Plugin {
 	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
+	private Settings $settings;
 
 	public function __construct(
 		public readonly string $plugin_url,
 		public readonly string $version,
-	) {}
+	) {
+		$this->settings = new Settings;
+	}
 
 	public function setup(): void {
 		add_action( 'load-tools_page_action-scheduler', array( $this, 'on_action_scheduler_screen' ) );
@@ -26,26 +29,8 @@ class Plugin {
 		wp_localize_script( 'action-scheduler-tools', 'actionSchedulerTools', array(
 			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'action-scheduler-tools' ),
-			'settings' => $this->get_settings(),
+			'settings' => $this->settings->get_settings(),
 		) );
-	}
-
-	private function get_settings(): array {
-		$defaults = array(
-			'batch_size'               => 10,
-			'batch_size_enabled'       => false,
-			'lock_duration'            => 20,
-			'lock_duration_enabled'    => false,
-			'max_runners'              => 10,
-			'max_runners_enabled'      => false,
-			'retention_period'         => 10,
-			'retention_period_enabled' => false,
-		);
-
-		$persisted = (array) get_option( self::SETTINGS_KEY, array() );
-		return $this->sanitize_settings(
-			array_merge( $defaults, array_intersect_key( $persisted, $defaults ) )
-		);
 	}
 
 	public function on_settings_save(): void {
@@ -60,7 +45,7 @@ class Plugin {
 			return;
 		}
 
-		$settings = $this->get_settings();
+		$settings = $this->settings->get_settings();
 
 		foreach ( $post_data as $key => $value ) {
 			if ( array_key_exists( $key, $settings ) ) {
@@ -68,36 +53,13 @@ class Plugin {
 			}
 		}
 
-		$settings = $this->sanitize_settings( $settings );
+		$settings = $this->settings->sanitize( $settings );
 		update_option( self::SETTINGS_KEY, $settings );
 		wp_send_json_success();
 	}
 
-	private function sanitize_settings( array $settings ): array {
-		foreach ( $settings as $key => $value ) {
-			if ( str_ends_with( $key, '_enabled' ) ) {
-				$settings[ $key ] = $this->boolify( $value );
-			} else {
-				$settings[ $key ] = (int) $value;
-			}
-		}
-
-		return $settings;
-	}
-
-	private function boolify( $value ): bool {
-		// Special handling for JSON 'true' or 'false' strings.
-		if ( is_string( $value ) && 'true' === strtolower( $value ) ) {
-			return true;
-		} elseif ( is_string( $value ) && 'false' === strtolower( $value ) ) {
-			return false;
-		}
-
-		// Otherwise, follow normal PHP truthiness rules.
-		return (bool) $value;
-	}
 
 	public function apply_filters(): void {
-		( new Filters( $this->get_settings() ) )->setup();
+		( new Filters( $this->settings->get_settings() ) )->setup();
 	}
 }
