@@ -29,7 +29,7 @@ class Plugin {
 		wp_localize_script( 'action-scheduler-tools', 'actionSchedulerTools', array(
 			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'action-scheduler-tools' ),
-			'settings' => $this->settings->get_settings(),
+			'settings' => $this->settings->get_settings_and_constraints(),
 		) );
 	}
 

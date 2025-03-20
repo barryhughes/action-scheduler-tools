@@ -5,41 +5,58 @@ namespace Automattic\Chronos\Action_Scheduler_Tools;
 class Settings {
 	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
 
-	private const CONSTRAINTS = [
+	private const array FIELDS = [
 		'batch_size' => [
 			'default'    => 10,
 			'validation' => 'absint',
 			'min'        => 0,
 			'max'        => 40,
+			'type'       => 'range',
 		],
 		'lock_duration' => [
 			'default'    => 20,
 			'validation' => 'absint',
 			'min'        => 0,
 			'max'        => 120,
+			'type'       => 'range',
 		],
 		'max_runners' => [
 			'default'    => 10,
 			'validation' => 'absint',
 			'min'        => 0,
 			'max'        => 40,
+			'type'       => 'range',
 		],
 		'retention_period' => [
 			'default'    => 10,
 			'validation' => 'absint',
 			'min'        => 0,
 			'max'        => 40,
+			'type'       => 'range',
 		],
 	];
 
 	private array $defaults;
 
 	public function __construct() {
-		foreach ( self::CONSTRAINTS as $key => $constraint ) {
+		foreach ( self::FIELDS as $key => $constraint ) {
 			$this->defaults[ $key ]              = $constraint['default'];
 			$this->defaults[ $key . '_enabled' ] = false;
 		}
 	}
+
+	public function get_settings_and_constraints(): array {
+		$description = self::FIELDS;
+		$settings    = $this->get_settings();
+
+		foreach ( $description as $key => $constraint ) {
+			$description[ $key ]['enabled'] = $settings[ $key . '_enabled' ] ?? false;
+			$description[ $key ]['value']   = $settings[ $key ] ?? $constraint['default'];
+		}
+
+		return $description;
+	}
+
 	public function get_settings(): array {
 		$persisted = (array) get_option( self::SETTINGS_KEY, array() );
 		return $this->sanitize(
@@ -56,16 +73,16 @@ class Settings {
 				continue;
 			}
 
-			if ( isset( self::CONSTRAINTS[ $key ]['validation'] ) ) {
-				$sanitized[ $key ] = call_user_func( self::CONSTRAINTS[ $key ]['validation'], $value );
+			if ( isset( self::FIELDS[ $key ]['validation'] ) ) {
+				$sanitized[ $key ] = call_user_func( self::FIELDS[ $key ]['validation'], $value );
 			}
 
-			if ( isset( self::CONSTRAINTS[ $key ]['min'] ) && $value < self::CONSTRAINTS[ $key ]['min'] ) {
-				$sanitized[ $key ] = self::CONSTRAINTS[ $key ]['min'];
+			if ( isset( self::FIELDS[ $key ]['min'] ) && $value < self::FIELDS[ $key ]['min'] ) {
+				$sanitized[ $key ] = self::FIELDS[ $key ]['min'];
 			}
 
-			if ( isset( self::CONSTRAINTS[ $key ]['max'] ) && $value > self::CONSTRAINTS[ $key ]['max'] ) {
-				$sanitized[ $key ] = self::CONSTRAINTS[ $key ]['max'];
+			if ( isset( self::FIELDS[ $key ]['max'] ) && $value > self::FIELDS[ $key ]['max'] ) {
+				$sanitized[ $key ] = self::FIELDS[ $key ]['max'];
 			}
 		}
 

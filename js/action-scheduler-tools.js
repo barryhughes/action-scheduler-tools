@@ -23,14 +23,14 @@ actionSchedulerTools = actionSchedulerTools || {};
 		const screenMeta      = document.getElementById( 'screen-meta' );
 		const screenMetaLinks = document.getElementById( 'screen-meta-links' );
 
-		const batchSizeEnabled       = Boolean( actionSchedulerTools.settings.batch_size_enabled );
-		const batchSizeSetting       = parseInt( actionSchedulerTools.settings.batch_size, 10 );
-		const lockDurationEnabled    = Boolean( actionSchedulerTools.settings.lock_duration_enabled );
-		const lockDuration           = parseInt( actionSchedulerTools.settings.lock_duration, 10 );
-		const maxRunnersEnabled      = Boolean( actionSchedulerTools.settings.max_runners_enabled );
-		const maxRunnersSetting      = parseInt( actionSchedulerTools.settings.max_runners, 10 );
-		const retentionPeriodEnabled = Boolean( actionSchedulerTools.settings.retention_period_enabled );
-		const retentionPeriodSetting = parseInt( actionSchedulerTools.settings.retention_period, 10 );
+		const batchSizeEnabled       = Boolean( actionSchedulerTools.settings.batch_size.enabled );
+		const batchSizeSetting       = parseInt( actionSchedulerTools.settings.batch_size.value, 10 );
+		const lockDurationEnabled    = Boolean( actionSchedulerTools.settings.lock_duration.enabled );
+		const lockDuration           = parseInt( actionSchedulerTools.settings.lock_duration.value, 10 );
+		const maxRunnersEnabled      = Boolean( actionSchedulerTools.settings.max_runners.enabled );
+		const maxRunnersSetting      = parseInt( actionSchedulerTools.settings.max_runners.value, 10 );
+		const retentionPeriodEnabled = Boolean( actionSchedulerTools.settings.retention_period.enabled );
+		const retentionPeriodSetting = parseInt( actionSchedulerTools.settings.retention_period.value, 10 );
 
 		const drawer = makeElement(`
 			<div id="as-tools-wrap" class="no-sidebar hidden">
