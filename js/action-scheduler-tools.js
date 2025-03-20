@@ -25,6 +25,8 @@ actionSchedulerTools = actionSchedulerTools || {};
 
 		const batchSizeEnabled       = Boolean( actionSchedulerTools.settings.batch_size_enabled );
 		const batchSizeSetting       = parseInt( actionSchedulerTools.settings.batch_size, 10 );
+		const lockDurationEnabled    = Boolean( actionSchedulerTools.settings.lock_duration_enabled );
+		const lockDuration           = parseInt( actionSchedulerTools.settings.lock_duration, 10 );
 		const maxRunnersEnabled      = Boolean( actionSchedulerTools.settings.max_runners_enabled );
 		const maxRunnersSetting      = parseInt( actionSchedulerTools.settings.max_runners, 10 );
 		const retentionPeriodEnabled = Boolean( actionSchedulerTools.settings.retention_period_enabled );
@@ -88,6 +90,25 @@ actionSchedulerTools = actionSchedulerTools || {};
 							<input name="as-tools-retention-period" data-settings-key="retention_period" type="range" min="0" max="40" value="${retentionPeriodSetting}" />
 							<span class="echo-input-value disabled">0</span>
 						</label>					
+					</div>
+				</section>
+				
+				<section id="as-tools-async-lock-duration-wrapper">
+					<div class="as-tools-enable-disable">
+						<label>
+							<input type="checkbox" data-settings-key="lock_duration_enabled" ${lockDurationEnabled ? 'checked' : ''} />
+							<span>
+								<strong>${wp.i18n.__( 'Async Lock Duration', 'action-scheduler-tools' )} </strong> &rarr;
+								${wp.i18n.__( 'Delay in seconds between the creation of new async queue runners.', 'action-scheduler-tools' )}
+							</span>
+						</label>
+					</div>
+					
+					<div class="as-tools-enabled-disabled">
+						<label>
+							<input name="as-tools-lock-duration" data-settings-key="lock_duration" type="range" min="0" max="120" value="${lockDuration}" />
+							<span class="echo-input-value disabled">0</span>
+						</label>
 					</div>
 				</section>
 				

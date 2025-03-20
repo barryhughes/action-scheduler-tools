@@ -34,6 +34,8 @@ class Plugin {
 		$defaults = array(
 			'batch_size'               => 10,
 			'batch_size_enabled'       => false,
+			'lock_duration'            => 20,
+			'lock_duration_enabled'    => false,
 			'max_runners'              => 10,
 			'max_runners_enabled'      => false,
 			'retention_period'         => 10,
