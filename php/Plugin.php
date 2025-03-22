@@ -9,9 +9,7 @@ class Plugin {
 	public function __construct(
 		public readonly string $plugin_url,
 		public readonly string $version,
-	) {
-		$this->settings = new Settings;
-	}
+	) {}
 
 	public function setup(): void {
 		add_action( 'load-tools_page_action-scheduler', array( $this, 'on_action_scheduler_screen' ) );
@@ -29,8 +27,16 @@ class Plugin {
 		wp_localize_script( 'action-scheduler-tools', 'actionSchedulerTools', array(
 			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'action-scheduler-tools' ),
-			'settings' => $this->settings->get_settings_and_constraints(),
+			'settings' => $this->settings()->get_settings_and_constraints(),
 		) );
+	}
+
+	public function settings(): Settings {
+		if ( empty( $this->settings ) ) {
+			$this->settings = new Settings;
+		}
+
+		return $this->settings;
 	}
 
 	public function on_settings_save(): void {
@@ -45,7 +51,7 @@ class Plugin {
 			return;
 		}
 
-		$settings = $this->settings->get_settings();
+		$settings = $this->settings()->get_settings();
 
 		foreach ( $post_data as $key => $value ) {
 			if ( array_key_exists( $key, $settings ) ) {
@@ -53,13 +59,13 @@ class Plugin {
 			}
 		}
 
-		$settings = $this->settings->sanitize( $settings );
+		$settings = $this->settings()->sanitize( $settings );
 		update_option( self::SETTINGS_KEY, $settings );
 		wp_send_json_success();
 	}
 
 
 	public function apply_filters(): void {
-		( new Filters( $this->settings->get_settings() ) )->setup();
+		( new Filters( $this->settings()->get_settings() ) )->setup();
 	}
 }

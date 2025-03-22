@@ -1,6 +1,9 @@
 actionSchedulerTools = actionSchedulerTools || {};
 
 ( function() {
+	const __              = ( text ) => wp.i18n.__( text );
+	const escAttr         = ( text ) => wp.escapeHtml.escapeAttribute( '' + text );
+	const escHtml         = ( text ) => wp.escapeHtml.escapeHTML( '' + text );
 	const proposedSettings = actionSchedulerTools.settings;
 
 	let saveButton;
@@ -22,98 +25,43 @@ actionSchedulerTools = actionSchedulerTools || {};
 	function buildDrawerUI() {
 		const screenMeta      = document.getElementById( 'screen-meta' );
 		const screenMetaLinks = document.getElementById( 'screen-meta-links' );
+		let   drawerHtml      = '';
 
-		const batchSizeEnabled       = Boolean( actionSchedulerTools.settings.batch_size.enabled );
-		const batchSizeSetting       = parseInt( actionSchedulerTools.settings.batch_size.value, 10 );
-		const lockDurationEnabled    = Boolean( actionSchedulerTools.settings.lock_duration.enabled );
-		const lockDuration           = parseInt( actionSchedulerTools.settings.lock_duration.value, 10 );
-		const maxRunnersEnabled      = Boolean( actionSchedulerTools.settings.max_runners.enabled );
-		const maxRunnersSetting      = parseInt( actionSchedulerTools.settings.max_runners.value, 10 );
-		const retentionPeriodEnabled = Boolean( actionSchedulerTools.settings.retention_period.enabled );
-		const retentionPeriodSetting = parseInt( actionSchedulerTools.settings.retention_period.value, 10 );
+		for ( const key in actionSchedulerTools.settings ) {
+			const properties = actionSchedulerTools.settings[key];
+			const configKey  = escAttr( key );
+			const kebabKey   = escAttr( key.replaceAll('_', '-') );
+
+			drawerHtml += `
+				<section id="as-tools-${kebabKey}-wrapper">
+					<div class="as-tools-enable-disable">
+						<label>
+							<input type="checkbox" data-settings-key="${configKey}_enabled" ${properties.enabled ? 'checked' : ''} />
+							<span>
+								<strong>${escHtml( properties.name )} </strong> &rarr;
+								${escHtml( properties.description )}</span>
+						</label>
+					</div>
+					
+					<div class="as-tools-enabled-disabled">
+						<label>
+							<input name="as-tools-${kebabKey}" data-settings-key="${configKey}" type="range" min="${escAttr( properties.min )}" max="${escAttr( properties.max )}" value="${escAttr( properties.value )}" />
+							<span class="echo-input-value disabled">0</span>
+						</label>					
+					</div>
+				</section>
+			`;
+		}
 
 		const drawer = makeElement(`
 			<div id="as-tools-wrap" class="no-sidebar hidden">
-				<h3>${wp.i18n.__( 'Advanced Configuration Tools', 'action-scheduler-tools' )}</h3>
-				<p>${wp.i18n.__( 'You can enable and then override various settings via this panel.', 'action-scheduler-tools' )}</p>
+				<h3>${escHtml( __( 'Advanced Configuration Tools', 'action-scheduler-tools' ) )}</h3>
+				<p>${escHtml( __( 'You can enable and then override various settings via this panel.', 'action-scheduler-tools' ) )}</p>
 				
-				<section id="as-tools-batch-size-wrapper">
-					<div class="as-tools-enable-disable">
-						<label>
-							<input type="checkbox" data-settings-key="batch_size_enabled" ${batchSizeEnabled ? 'checked' : ''} />
-							<span>
-								<strong>${wp.i18n.__( 'Batch Size', 'action-scheduler-tools' )} </strong> &rarr;
-								${wp.i18n.__( 'This controls the number of actions that an individual queue runner will attempt to claim per batch.', 'action-scheduler-tools' )}</span>
-						</label>
-					</div>
-					
-					<div class="as-tools-enabled-disabled">
-						<label>
-							<input name="as-tools-batch-size" data-settings-key="batch_size" type="range" min="0" max="40" value="${batchSizeSetting}" />
-							<span class="echo-input-value disabled">0</span>
-						</label>					
-					</div>
-				</section>
-				
-				<section id="as-tools-concurrent-runners-wrapper">
-					<div class="as-tools-enable-disable">
-						<label>
-							<input type="checkbox" data-settings-key="max_runners_enabled" ${maxRunnersEnabled ? 'checked' : ''} />
-							<span>
-								<strong>${wp.i18n.__( 'Max Queue Runners', 'action-scheduler-tools' )} </strong> &rarr;
-								${wp.i18n.__( 'The maximum number of queue runners that should exist and process actions at the same time.', 'action-scheduler-tools' )}
-							</span>
-						</label>
-					</div>
-					
-					<div class="as-tools-enabled-disabled">
-						<label>
-							<input name="as-tools-max-runners" data-settings-key="max_runners" type="range" min="0" max="40" value="${maxRunnersSetting}" />
-							<span class="echo-input-value disabled">0</span>
-						</label>					
-					</div>
-				</section>
-				
-				<section id="as-tools-retention-period-wrapper">
-					<div class="as-tools-enable-disable">
-						<label>
-							<input type="checkbox" data-settings-key="retention_period_enabled" ${retentionPeriodEnabled ? 'checked' : ''} />
-							<span>
-								<strong>${wp.i18n.__( 'Retention Period', 'action-scheduler-tools' )} </strong> &rarr;
-								${wp.i18n.__( 'The number of days for which records of completed actions should be retained.', 'action-scheduler-tools' )}
-							</span>
-						</label>
-					</div>
-					
-					<div class="as-tools-enabled-disabled">
-						<label>
-							<input name="as-tools-retention-period" data-settings-key="retention_period" type="range" min="0" max="40" value="${retentionPeriodSetting}" />
-							<span class="echo-input-value disabled">0</span>
-						</label>					
-					</div>
-				</section>
-				
-				<section id="as-tools-async-lock-duration-wrapper">
-					<div class="as-tools-enable-disable">
-						<label>
-							<input type="checkbox" data-settings-key="lock_duration_enabled" ${lockDurationEnabled ? 'checked' : ''} />
-							<span>
-								<strong>${wp.i18n.__( 'Async Lock Duration', 'action-scheduler-tools' )} </strong> &rarr;
-								${wp.i18n.__( 'Delay in seconds between the creation of new async queue runners.', 'action-scheduler-tools' )}
-							</span>
-						</label>
-					</div>
-					
-					<div class="as-tools-enabled-disabled">
-						<label>
-							<input name="as-tools-lock-duration" data-settings-key="lock_duration" type="range" min="0" max="120" value="${lockDuration}" />
-							<span class="echo-input-value disabled">0</span>
-						</label>
-					</div>
-				</section>
+				${drawerHtml}
 				
 				<section id="as-tools-save-wrap">
-					<button id="as-tools-save" class="button-secondary">${wp.i18n.__( 'Save', 'action-scheduler-tools' )}</button>
+					<button id="as-tools-save" class="button-secondary">${escHtml(__( 'Save', 'action-scheduler-tools' ))}</button>
 					<span id="as-tools-save-feedback"></span>
 				</section>
 			</div>
@@ -122,7 +70,7 @@ actionSchedulerTools = actionSchedulerTools || {};
 		const drawerHandle = makeElement(`
 			<div id="as-tools-link-wrap" class="hide-if-no-js screen-meta-toggle">
 				<button id="as-show-tools-link" class="button show-settings" aria-controls="as-tools-wrap" aria-expanded="false">
-					${wp.i18n.__( 'Advanced', 'action-scheduler-tools' )}
+					${escHtml( __( 'Advanced', 'action-scheduler-tools' ) )}
 				</button>
 			</div>
 		`);
@@ -181,7 +129,7 @@ actionSchedulerTools = actionSchedulerTools || {};
 	async function onSave() {
 		saveButton.disabled = true;
 		saveButton.classList.add( 'disabled' );
-		saveFeedback.innerHTML = wp.i18n.__( 'Saving&hellip;', 'action-scheduler-tools' );
+		saveFeedback.innerHTML = escHtml( __( 'Saving&hellip;', 'action-scheduler-tools' ) );
 		clearTimeout( saveFeedbackTimeout );
 
 		const response = await fetch( actionSchedulerTools.ajaxUrl, {
@@ -195,8 +143,8 @@ actionSchedulerTools = actionSchedulerTools || {};
 		saveButton.classList.remove( 'disabled' );
 
 		const resultText = response.status === 200 && responseJson.success
-			? wp.i18n.__( 'saved!', 'action-scheduler-tools' )
-			: wp.i18n.__( 'unable to save settings&mdash;consider reloading the page and trying again.', 'action-scheduler-tools' );
+			? escHtml( __( 'saved!', 'action-scheduler-tools' ) )
+			: escHtml( __( 'unable to save settings&mdash;consider reloading the page and trying again.', 'action-scheduler-tools' ) );
 
 		saveFeedback.innerHTML += ` <strong>${resultText}</strong>`;
 

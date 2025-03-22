@@ -4,49 +4,57 @@ namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 class Settings {
 	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
-
-	private const array FIELDS = [
-		'batch_size' => [
-			'default'    => 10,
-			'validation' => 'absint',
-			'min'        => 0,
-			'max'        => 40,
-			'type'       => 'range',
-		],
-		'lock_duration' => [
-			'default'    => 20,
-			'validation' => 'absint',
-			'min'        => 0,
-			'max'        => 120,
-			'type'       => 'range',
-		],
-		'max_runners' => [
-			'default'    => 10,
-			'validation' => 'absint',
-			'min'        => 0,
-			'max'        => 40,
-			'type'       => 'range',
-		],
-		'retention_period' => [
-			'default'    => 10,
-			'validation' => 'absint',
-			'min'        => 0,
-			'max'        => 40,
-			'type'       => 'range',
-		],
-	];
-
+	private array $fields;
 	private array $defaults;
 
 	public function __construct() {
-		foreach ( self::FIELDS as $key => $constraint ) {
+		$this->fields = [
+			'batch_size' => [
+				'default'     => 10,
+				'validation'  => 'absint',
+				'min'         => 0,
+				'max'         => 40,
+				'type'        => 'range',
+				'name'        => __( 'Batch Size', 'action-scheduler-tools' ),
+				'description' => __( 'This controls the number of actions that an individual queue runner will attempt to claim per batch.', 'action-scheduler-tools' ),
+			],
+			'lock_duration' => [
+				'default'     => 20,
+				'validation'  => 'absint',
+				'min'         => 0,
+				'max'         => 120,
+				'type'        => 'range',
+				'name'        => __( 'Max Queue Runners', 'action-scheduler-tools' ),
+				'description' => __( 'The maximum number of queue runners that should exist and process actions at the same time.', 'action-scheduler-tools' ),
+			],
+			'max_runners' => [
+				'default'     => 10,
+				'validation'  => 'absint',
+				'min'         => 0,
+				'max'         => 40,
+				'type'        => 'range',
+				'name'        => __( 'Retention Period', 'action-scheduler-tools' ),
+				'description' => __( 'The number of days for which records of completed actions should be retained.', 'action-scheduler-tools' ),
+			],
+			'retention_period' => [
+				'default'     => 10,
+				'validation'  => 'absint',
+				'min'         => 0,
+				'max'         => 40,
+				'type'        => 'range',
+				'name'        => __( 'Async Lock Duration', 'action-scheduler-tools' ),
+				'description' => __( 'Delay in seconds between the creation of new async queue runners.', 'action-scheduler-tools'),
+			],
+		];
+
+		foreach ( $this->fields as $key => $constraint ) {
 			$this->defaults[ $key ]              = $constraint['default'];
 			$this->defaults[ $key . '_enabled' ] = false;
 		}
 	}
 
 	public function get_settings_and_constraints(): array {
-		$description = self::FIELDS;
+		$description = $this->fields;
 		$settings    = $this->get_settings();
 
 		foreach ( $description as $key => $constraint ) {
@@ -73,16 +81,16 @@ class Settings {
 				continue;
 			}
 
-			if ( isset( self::FIELDS[ $key ]['validation'] ) ) {
-				$sanitized[ $key ] = call_user_func( self::FIELDS[ $key ]['validation'], $value );
+			if ( isset( $this->fields[ $key ]['validation'] ) ) {
+				$sanitized[ $key ] = call_user_func( $this->fields[ $key ]['validation'], $value );
 			}
 
-			if ( isset( self::FIELDS[ $key ]['min'] ) && $value < self::FIELDS[ $key ]['min'] ) {
-				$sanitized[ $key ] = self::FIELDS[ $key ]['min'];
+			if ( isset( $this->fields[ $key ]['min'] ) && $value < $this->fields[ $key ]['min'] ) {
+				$sanitized[ $key ] = $this->fields[ $key ]['min'];
 			}
 
-			if ( isset( self::FIELDS[ $key ]['max'] ) && $value > self::FIELDS[ $key ]['max'] ) {
-				$sanitized[ $key ] = self::FIELDS[ $key ]['max'];
+			if ( isset( $this->fields[ $key ]['max'] ) && $value > $this->fields[ $key ]['max'] ) {
+				$sanitized[ $key ] = $this->fields[ $key ]['max'];
 			}
 		}
 
