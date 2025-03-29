@@ -2,30 +2,37 @@
     padding: 8px 20px 12px;
 
     @media screen and (min-width: 68rem) {
-        & > section {
+        & .as-tools-config-controls {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            align-content: center;
-            justify-content: flex-start;
-            padding-bottom: 1rem;
+            flex-direction: column;
+            width: 60%;
 
+            & > section {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                align-content: center;
+                justify-content: flex-start;
+                padding-bottom: 1rem;
+
+            }
+
+            & label:not(.switch) {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                width: 26rem;
+            }
+
+            &.as-tools-enabled-disabled label {
+                align-items: flex-start;
+            }
+
+            input[type="range"] {
+                width: 30rem;
+            }
         }
 
-        & label {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            width: 26rem;
-        }
-
-        &.as-tools-enabled-disabled label {
-            align-items: flex-start;
-        }
-
-        input[type="range"] {
-            width: 30rem;
-        }
     }
 
     label {

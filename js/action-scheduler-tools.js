@@ -4,7 +4,6 @@ actionSchedulerTools = actionSchedulerTools || {};
 	const __              = ( text ) => wp.i18n.__( text );
 	const escAttr         = ( text ) => wp.escapeHtml.escapeAttribute( '' + text );
 	const escHtml         = ( text ) => wp.escapeHtml.escapeHTML( '' + text );
-	const proposedSettings = actionSchedulerTools.settings;
 
 	let saveButton;
 	let saveFeedback;
@@ -25,17 +24,18 @@ actionSchedulerTools = actionSchedulerTools || {};
 	function buildDrawerUI() {
 		const screenMeta      = document.getElementById( 'screen-meta' );
 		const screenMetaLinks = document.getElementById( 'screen-meta-links' );
-		let   drawerHtml      = '';
+		let   controls        = '';
 
 		for ( const key in actionSchedulerTools.settings ) {
 			const properties = actionSchedulerTools.settings[key];
 			const configKey  = escAttr( key );
 			const kebabKey   = escAttr( key.replaceAll('_', '-') );
+			const labelClass = escAttr( actionSchedulerTools.settings[key].type );
 
-			drawerHtml += `
+			controls += `
 				<section id="as-tools-${kebabKey}-wrapper">
 					<div class="as-tools-enable-disable">
-						<label>
+						<label class="${labelClass}">
 							<input type="checkbox" data-settings-key="${configKey}_enabled" ${properties.enabled ? 'checked' : ''} />
 							<span>
 								<strong>${escHtml( properties.name )} </strong> &rarr;
@@ -45,7 +45,7 @@ actionSchedulerTools = actionSchedulerTools || {};
 			`;
 
 			if ( properties.type === 'range' ) {
-				drawerHtml += `
+				controls += `
 					<div class="as-tools-enabled-disabled">
 						<label>
 							<input name="as-tools-${kebabKey}" data-settings-key="${configKey}" type="range" min="${escAttr( properties.min )}" max="${escAttr( properties.max )}" value="${escAttr( properties.value )}" />
@@ -55,15 +55,19 @@ actionSchedulerTools = actionSchedulerTools || {};
 				`;
 			}
 
-			drawerHtml += '</section>';
+			controls += '</section>';
 		}
+
+
 
 		const drawer = makeElement(`
 			<div id="as-tools-wrap" class="no-sidebar hidden">
 				<h3>${escHtml( __( 'Advanced Configuration Tools', 'action-scheduler-tools' ) )}</h3>
 				<p>${escHtml( __( 'You can enable and then override various settings via this panel.', 'action-scheduler-tools' ) )}</p>
 				
-				${drawerHtml}
+				<div class="as-tools-config-controls">
+					${controls}
+				</div>
 				
 				<section id="as-tools-save-wrap">
 					<button id="as-tools-save" class="button-secondary">${escHtml(__( 'Save', 'action-scheduler-tools' ))}</button>

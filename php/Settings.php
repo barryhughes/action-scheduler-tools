@@ -49,7 +49,7 @@ class Settings {
 				'validation'  => 'boolval',
 				'type'        => 'switch',
 				'name'        => __( 'Disable Routine Logs', 'action-scheduler-tools' ),
-				'description' => __( 'Stop Action Scheduler from logging when actions are created, started and completed.', 'action-scheduler-tools'),
+				'description' => __( 'Stop Action Scheduler from logging when actions are created, started or completed (but continue to log errors and problems).', 'action-scheduler-tools'),
 			],
 		];
 
