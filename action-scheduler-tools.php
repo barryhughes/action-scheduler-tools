@@ -2,7 +2,7 @@
 /**
  * Plugin name:       Action Scheduler Tools
  * Description:       Adds visual controls making it easier to fine-tune Action Scheduler's performance characteristics. Experimental.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Author:            Automattic
  * Author URI:        https://woocommerce.com
  * License:           GPL-3.0
