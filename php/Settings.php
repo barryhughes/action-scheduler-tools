@@ -45,10 +45,16 @@ class Settings {
 				'name'        => __( 'Async Lock Duration', 'action-scheduler-tools' ),
 				'description' => __( 'Delay in seconds between the creation of new async queue runners.', 'action-scheduler-tools'),
 			],
+			'disable_routine_logs' => [
+				'validation'  => 'boolval',
+				'type'        => 'switch',
+				'name'        => __( 'Disable Routine Logs', 'action-scheduler-tools' ),
+				'description' => __( 'Stop Action Scheduler from logging when actions are created, started and completed.', 'action-scheduler-tools'),
+			],
 		];
 
 		foreach ( $this->fields as $key => $constraint ) {
-			$this->defaults[ $key ]              = $constraint['default'];
+			$this->defaults[ $key ]              = $constraint['default'] ?? false;
 			$this->defaults[ $key . '_enabled' ] = false;
 		}
 	}

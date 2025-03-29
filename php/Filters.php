@@ -2,6 +2,8 @@
 
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
+use ActionScheduler_Logger;
+
 readonly class Filters {
 	public function __construct(
 		private array $settings
@@ -22,6 +24,10 @@ readonly class Filters {
 
 		if ( $this->settings['lock_duration_enabled'] ?? false ) {
 			add_filter( 'action_scheduler_lock_duration', array( $this, 'lock_duration' ), 1000, 2 );
+		}
+
+		if ( $this->settings['disable_routine_logs_enabled'] ?? false ) {
+			$this->unhook_default_loggers();
 		}
 	}
 
@@ -55,5 +61,16 @@ readonly class Filters {
 		}
 
 		return $default;
+	}
+
+	public function unhook_default_loggers(): void {
+		$remove_default_loggers = function () {
+			$logger = ActionScheduler_Logger::instance();
+			remove_action( 'action_scheduler_begin_execute', [ $logger, 'log_started_action' ] );
+			remove_action( 'action_scheduler_after_execute', [ $logger, 'log_completed_action' ] );
+			remove_action( 'action_scheduler_stored_action', [ $logger, 'log_stored_action' ] );
+		};
+
+		add_action( 'init', $remove_default_loggers, 10000 );
 	}
 }

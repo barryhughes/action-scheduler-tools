@@ -42,15 +42,20 @@ actionSchedulerTools = actionSchedulerTools || {};
 								${escHtml( properties.description )}</span>
 						</label>
 					</div>
-					
+			`;
+
+			if ( properties.type === 'range' ) {
+				drawerHtml += `
 					<div class="as-tools-enabled-disabled">
 						<label>
 							<input name="as-tools-${kebabKey}" data-settings-key="${configKey}" type="range" min="${escAttr( properties.min )}" max="${escAttr( properties.max )}" value="${escAttr( properties.value )}" />
 							<span class="echo-input-value disabled">0</span>
 						</label>					
 					</div>
-				</section>
-			`;
+				`;
+			}
+
+			drawerHtml += '</section>';
 		}
 
 		const drawer = makeElement(`
@@ -99,7 +104,7 @@ actionSchedulerTools = actionSchedulerTools || {};
 		const enabled = event.target.checked;
 		const setting = event.target.parentElement.parentElement.parentElement.querySelector( '.as-tools-enabled-disabled label' );
 
-		if ( setting.children.length < 1 ) {
+		if ( setting === null || setting.children.length < 1 ) {
 			return;
 		}
 
