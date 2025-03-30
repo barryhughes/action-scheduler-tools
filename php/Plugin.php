@@ -2,6 +2,8 @@
 
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
+use ActionScheduler_Store;
+
 class Plugin {
 	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
 	private Settings $settings;
@@ -14,6 +16,7 @@ class Plugin {
 	public function setup(): void {
 		add_action( 'load-tools_page_action-scheduler', array( $this, 'on_action_scheduler_screen' ) );
 		add_action( 'wp_ajax_action_scheduler_tools_save_settings', array( $this, 'on_settings_save' ) );
+		add_action( 'wp_ajax_action_scheduler_tools_delete_finalized', array( $this, 'on_delete_finalized' ) );
 		add_action( 'action_scheduler_init', array( $this, 'apply_filters' ) );
 	}
 
@@ -62,6 +65,44 @@ class Plugin {
 		$settings = $this->settings()->sanitize( $settings );
 		update_option( self::SETTINGS_KEY, $settings );
 		wp_send_json_success();
+	}
+
+	public function on_delete_finalized(): void {
+		$this->do_delete_finalized();
+	}
+
+	public function do_delete_finalized( array|null $post_data = null ): void {
+		$post_data = (array) ( $post_data ?? $_POST );
+
+		if ( ! wp_verify_nonce( $post_data['nonce'], 'action-scheduler-tools' ) || ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error();
+			return;
+		}
+
+		$this->delete_finalized_actions()
+			? wp_send_json_success( [ 'continue' => true ] )
+			: wp_send_json_success();
+	}
+
+	/**
+	 * @return bool True if a further call is recommended, false if not.
+	 */
+	private function delete_finalized_actions(): bool {
+		$store = ActionScheduler_Store::instance();
+		$actions = $store->query_actions( [
+			'per_page' => 20,
+			'status'   => [
+				ActionScheduler_Store::STATUS_COMPLETE,
+				ActionScheduler_Store::STATUS_CANCELED,
+				ActionScheduler_Store::STATUS_FAILED,
+			],
+		] );
+
+		foreach ( $actions as $action ) {
+			$store->delete_action( $action );
+		}
+
+		return count( $actions ) === 20;
 	}
 
 

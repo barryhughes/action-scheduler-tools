@@ -13,7 +13,7 @@
                 align-items: center;
                 align-content: center;
                 justify-content: flex-start;
-                padding-bottom: 1rem;
+                padding-bottom: 1.5rem;
 
             }
 
@@ -44,6 +44,10 @@
         }
     }
 
+    p {
+        padding-bottom: 1rem;
+    }
+
     .echo-input-value {
         width: 2rem;
         padding: 0.1rem 0.2rem;
@@ -60,6 +64,26 @@
     }
 }
 
+#as-tools-save-tool-buttons-wrap {
+    overflow: hidden;
+
+
+    .as-control-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        &.left {
+            float: left;
+        }
+
+        &.right {
+            float: right;
+        }
+    }
+
+}
 #as-tools-save-feedback {
     padding-left: 1rem;
     font-style: italic;
@@ -67,4 +91,28 @@
 
 #as-tools-link-wrap {
     float: left;
+}
+
+dialog.as-tools-modal {
+    flex-direction: column;
+    align-items: center;
+
+    width: 70%;
+    max-width: 50rem;
+    border: 2px solid #222;
+    padding: 0;
+
+    section {
+        width: 100%;
+        padding: 2rem 0;
+        text-align: center;
+    }
+
+    section.description {
+        border-bottom: 1px solid #666;
+    }
+
+    .choices .proceed {
+        margin-right: 2rem;
+    }
 }

@@ -13,7 +13,10 @@ actionSchedulerTools = actionSchedulerTools || {};
 	 * Let's kick it.
 	 */
 	function begin() {
+		buildDialogsUI();
 		buildDrawerUI();
+
+		initDialogsUI();
 		initDrawerUI();
 	}
 
@@ -58,8 +61,6 @@ actionSchedulerTools = actionSchedulerTools || {};
 			controls += '</section>';
 		}
 
-
-
 		const drawer = makeElement(`
 			<div id="as-tools-wrap" class="no-sidebar hidden">
 				<h3>${escHtml( __( 'Advanced Configuration Tools', 'action-scheduler-tools' ) )}</h3>
@@ -69,9 +70,21 @@ actionSchedulerTools = actionSchedulerTools || {};
 					${controls}
 				</div>
 				
-				<section id="as-tools-save-wrap">
-					<button id="as-tools-save" class="button-secondary">${escHtml(__( 'Save', 'action-scheduler-tools' ))}</button>
-					<span id="as-tools-save-feedback"></span>
+				<section id="as-tools-save-tool-buttons-wrap">
+					<div class="as-control-button left">
+						<button id="as-tools-save" class="button-secondary">
+							${escHtml(__( 'Save', 'action-scheduler-tools' ))}
+						</button>
+						<span id="as-tools-save-feedback"></span>
+					</div>
+					
+					<div class="as-control-button right">
+						<button id="as-tools-delete-finalized" class="button-secondary">
+							${escHtml(__( 'Delete all finalized actions', 'action-scheduler-tools' ))}
+							<span id="as-tools-delete-feedback"></span>
+						</button>
+						
+					</div>
 				</section>
 			</div>
 		`);
@@ -177,6 +190,64 @@ actionSchedulerTools = actionSchedulerTools || {};
 		});
 
 		return payload;
+	}
+
+	function buildDialogsUI() {
+		let dialogs = `
+			<dialog id="as-tools-dialog-delete-finalized" class="as-tools-modal">
+				<section class="description">
+					<p>${escHtml( __( 'This tool will delete all finalized actions (it removes all completed and failed actions).', 'action-scheduler-tools' ) ) }</p>
+				</section>
+				<section class="choice">
+					<p>${escHtml( __( 'Do you want to proceed?', 'action-scheduler-tools' ) ) }</p>
+					<div class="choices">
+						<button class="button-primary proceed">${escHtml( __( 'Proceed', 'action-scheduler-tools' ) )}</button>
+						<button class="button-secondary cancel" autofocus>${escHtml( __( 'Cancel', 'action-scheduler-tools' ) )}</button>
+					</div>
+				</section>
+				<section class="working hidden">
+					<p>${escHtml( __( 'Working&hellip;', 'action-scheduler-tools' ) ) }</p>
+				</section>
+			</dialog>
+		`
+
+		document.body.insertAdjacentHTML( 'beforeend', dialogs );
+	}
+
+	function initDialogsUI() {
+		const deleteFinalized = document.getElementById( 'as-tools-dialog-delete-finalized' );
+		const choice          = deleteFinalized.querySelector( 'section.choice' )
+		const working         = deleteFinalized.querySelector( 'section.working' )
+		const show            = document.getElementById( 'as-tools-delete-finalized' );
+		const close           = deleteFinalized.querySelector( 'button.cancel' );
+		const proceed         = deleteFinalized.querySelector( 'button.proceed' );
+
+		show.addEventListener( 'click', () => deleteFinalized.showModal() );
+		close.addEventListener( 'click', () => { deleteFinalized.close() } );
+		proceed.addEventListener( 'click', async () => {
+			choice.classList.add( 'hidden' );
+			working.classList.remove( 'hidden' );
+
+			while ( true ) {
+				const request = new FormData();
+				request.append('action', 'action_scheduler_tools_delete_finalized');
+				request.append('nonce', actionSchedulerTools.nonce);
+
+				const response = await fetch(actionSchedulerTools.ajaxUrl, {
+					method: 'POST',
+					body: request
+				});
+
+				const responseJson = await response.json();
+
+				// The server may ask us to launch another request if there is more work to be done.
+				if ( response.status !== 200 || ! responseJson.data || ! responseJson.data.continue ) {
+					break;
+				}
+			}
+
+			location.reload();
+		} );
 	}
 
 	/**
