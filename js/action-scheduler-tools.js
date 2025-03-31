@@ -266,7 +266,7 @@ actionSchedulerTools = actionSchedulerTools || {};
 	/**
 	 *
 	 * @param {Element}  element
-	 * @param {Event}    event
+	 * @param {string}   event
 	 * @param {Function} callable
 	 */
 	function addHandlerAndTrigger( element, event, callable ) {

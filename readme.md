@@ -18,3 +18,17 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
 
 - A large batch size can be the enemy of concurrency. For example, if you set the batch size to 50, and there are usually less than 50 actions waiting to be processed, then there's probably no point in setting the number of max queue runners to anything above 1.
 - A low retention period can help keep the size of Action Scheduler's database tables down ... but it also means you have a shorter period in which to capture information about any actions that are problematic in some way.
+
+### Progress
+
+- Done:
+  - Batch size control added
+  - Max (concurrent) queue runners control added
+  - Retention period control added
+  - Async lock duration control added
+  - Logging control added
+- Future possibilities:
+  - Auto-grouping for ungrouped actions
+  - Prioritization override by hook or by group
+- Other work we should really do:
+  - Once we get happy with the range of functionality, some tidy-up is in order
