@@ -27,8 +27,8 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
   - Retention period control added
   - Async lock duration control added
   - Logging control added
+  - Auto-grouping for ungrouped actions _(with caveats: an oversight in Action Scheduler needs to be addressed for this to work consistently)_
 - Future possibilities:
-  - Auto-grouping for ungrouped actions
   - Prioritization override by hook or by group
 - Other work we should really do:
   - Once we get happy with the range of functionality, some tidy-up is in order

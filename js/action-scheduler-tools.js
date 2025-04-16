@@ -1,9 +1,9 @@
 actionSchedulerTools = actionSchedulerTools || {};
 
 ( function() {
-	const __              = ( text ) => wp.i18n.__( text );
-	const escAttr         = ( text ) => wp.escapeHtml.escapeAttribute( '' + text );
-	const escHtml         = ( text ) => wp.escapeHtml.escapeHTML( '' + text );
+	const __              = ( text ) => text; //wp.i18n.__( text );
+	const escAttr         = ( text ) => text; //wp.escapeHtml.escapeAttribute( '' + text );
+	const escHtml         = ( text ) => text; //wp.escapeHtml.escapeHTML( '' + text );
 
 	let saveButton;
 	let saveFeedback;

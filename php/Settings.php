@@ -51,6 +51,12 @@ class Settings {
 				'name'        => __( 'Disable Routine Logs', 'action-scheduler-tools' ),
 				'description' => __( 'Stop Action Scheduler from logging when actions are created, started or completed (but continue to log errors and problems).', 'action-scheduler-tools'),
 			],
+			'auto_group_actions' => [
+				'validation'  => 'boolval',
+				'type'        => 'switch',
+				'name'        => __( 'Auto-Group Actions', 'action-scheduler-tools' ),
+				'description' => __( 'Some actions do not belong to a group. When this is enabled, an attempt is made to provide them with a group based on their plugin or hook prefix.', 'action-scheduler-tools'),
+			],
 		];
 
 		foreach ( $this->fields as $key => $constraint ) {

@@ -2,7 +2,7 @@
 /**
  * Plugin name:       Action Scheduler Tools
  * Description:       Adds visual controls making it easier to fine-tune Action Scheduler's performance characteristics. Experimental.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Author:            Automattic
  * Author URI:        https://woocommerce.com
  * License:           GPL-3.0
@@ -12,6 +12,7 @@
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 function setup(): void {
+	require __DIR__ . '/php/Autogrouper.php';
 	require __DIR__ . '/php/Filters.php';
 	require __DIR__ . '/php/Plugin.php';
 	require __DIR__ . '/php/Settings.php';

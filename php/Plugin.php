@@ -17,7 +17,7 @@ class Plugin {
 		add_action( 'load-tools_page_action-scheduler', array( $this, 'on_action_scheduler_screen' ) );
 		add_action( 'wp_ajax_action_scheduler_tools_save_settings', array( $this, 'on_settings_save' ) );
 		add_action( 'wp_ajax_action_scheduler_tools_delete_finalized', array( $this, 'on_delete_finalized' ) );
-		add_action( 'action_scheduler_init', array( $this, 'apply_filters' ) );
+		add_action( 'action_scheduler_init', array( $this, 'apply_filters' ), 1 );
 	}
 
 	public function on_action_scheduler_screen(): void {

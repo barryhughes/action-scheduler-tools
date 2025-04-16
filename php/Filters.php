@@ -29,6 +29,10 @@ readonly class Filters {
 		if ( $this->settings['disable_routine_logs_enabled'] ?? false ) {
 			$this->unhook_default_loggers();
 		}
+
+		if ( $this->settings['auto_group_actions_enabled'] ?? false ) {
+			( new Autogrouper )->setup();
+		}
 	}
 
 	public function batch_size( mixed $default ): mixed {
