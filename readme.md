@@ -32,3 +32,4 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
   - Prioritization override by hook or by group
 - Other work we should really do:
   - Once we get happy with the range of functionality, some tidy-up is in order
+  - Possibly as part of the tidy-up, improve escaping from within the JS/UI code
