@@ -4,6 +4,9 @@ Adds settings to the **Tools ‣ Scheduled Actions** admin page, making it easy 
 
 ![](https://share.codingkills.me/demo/wordpress/action-scheduler-config-010.png)
 
+> [!TIP]
+> The plugin is more a proof-of-concept/means of testing ideas for Action Scheduler than something that's intended for production use 'today'. Also, this plugin currently requires PHP 8.3, which might limit the number of environments in which it can be used (but this may be revised in the future to broaden compatibility).
+
 ### How Action Scheduler Works
 
 [Action Scheduler](https://actionscheduler.org/) works by periodically spawning queue runners, which have the job of actually processing any waiting actions. To do this, it first claims a batch of eligible actions and, once claimed, those actions cannot be processed by other queue runners (with one exception: if a queue runner fails unexpectedly, the claim will ultimately be released and the actions will then be picked up by a future queue runner). 
@@ -33,3 +36,4 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
 - Other work we should really do:
   - Once we get happy with the range of functionality, some tidy-up is in order
   - Possibly as part of the tidy-up, improve escaping from within the JS/UI code
+  - Re-think PHP 8.3 requirement
