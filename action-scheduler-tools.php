@@ -12,6 +12,7 @@
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 function setup(): void {
+	require __DIR__ . '/php/Modifier.php';
 	require __DIR__ . '/php/Autogrouper.php';
 	require __DIR__ . '/php/Filters.php';
 	require __DIR__ . '/php/Plugin.php';

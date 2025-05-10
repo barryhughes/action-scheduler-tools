@@ -30,10 +30,11 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
   - Retention period control added
   - Async lock duration control added
   - Logging control added
-  - Auto-grouping for ungrouped actions _(with caveats: an oversight in Action Scheduler needs to be addressed for this to work consistently)_
-- Future possibilities:
+  - Auto-grouping for ungrouped actions
+- In progress:
   - Prioritization override by hook or by group
 - Other work we should really do:
+  - Improve _delete all finalized actions_ UX, report on progress (otherwise, if lots of actions are candidates for deletion, it may appear as if the UI has frozen)
   - Once we get happy with the range of functionality, some tidy-up is in order
   - Possibly as part of the tidy-up, improve escaping from within the JS/UI code
   - Re-think PHP 8.3 requirement

@@ -3,6 +3,7 @@
 namespace Automattic\Chronos\Action_Scheduler_Tools;
 
 use ActionScheduler_Store;
+use Exception;
 
 class Plugin {
 	public const string SETTINGS_KEY = 'action_scheduler_tools_settings';
@@ -90,7 +91,7 @@ class Plugin {
 	private function delete_finalized_actions(): bool {
 		$store = ActionScheduler_Store::instance();
 		$actions = $store->query_actions( [
-			'per_page' => 20,
+			'per_page' => 40,
 			'status'   => [
 				ActionScheduler_Store::STATUS_COMPLETE,
 				ActionScheduler_Store::STATUS_CANCELED,
@@ -99,10 +100,14 @@ class Plugin {
 		] );
 
 		foreach ( $actions as $action ) {
-			$store->delete_action( $action );
+			try {
+				$store->delete_action( $action );
+			} catch ( Exception $e ) {
+				// An exception may be thrown if the action was already deleted by another process.
+			}
 		}
 
-		return count( $actions ) === 20;
+		return count( $actions ) === 40;
 	}
 
 
