@@ -26,7 +26,7 @@ class Plugin {
 
 	public function enqueue_scripts(): void {
 		wp_enqueue_style( 'action-scheduler-tools', $this->plugin_url . '/css/action-scheduler-tools.css', array(), $this->version );
-		wp_enqueue_script( 'action-scheduler-tools', $this->plugin_url . '/js/action-scheduler-tools.js', array(), $this->version );
+		wp_enqueue_script( 'action-scheduler-tools', $this->plugin_url . '/js/action-scheduler-tools.js', array( 'wp-i18n' ), $this->version );
 		wp_localize_script( 'action-scheduler-tools', 'actionSchedulerTools', array(
 			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'action-scheduler-tools' ),
