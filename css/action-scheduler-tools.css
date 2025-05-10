@@ -17,7 +17,7 @@
 
             }
 
-            & label:not(.switch) {
+            & label:not(.switch, .prioritization-grid) {
                 display: flex;
                 flex-direction: row;
                 align-items: flex-start;

@@ -57,6 +57,12 @@ class Settings {
 				'name'        => __( 'Auto-Group Actions', 'action-scheduler-tools' ),
 				'description' => __( 'Some actions do not belong to a group. When this is enabled, an attempt is made to provide them with a group based on their plugin or hook prefix.', 'action-scheduler-tools'),
 			],
+			'reprioritize_actions' => [
+				'validation'  => 'boolval',
+				'type'        => 'prioritization-grid',
+				'name'        => __( 'Re-prioritize actions', 'action-scheduler-tools' ),
+				'description' => __( 'You can define rules to identify actions (by hook or group) and then override their priority.', 'action-scheduler-tools'),
+			],
 		];
 
 		foreach ( $this->fields as $key => $constraint ) {

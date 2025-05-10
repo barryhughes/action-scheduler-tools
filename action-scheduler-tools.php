@@ -15,6 +15,7 @@ function setup(): void {
 	require __DIR__ . '/php/Autogrouper.php';
 	require __DIR__ . '/php/Filters.php';
 	require __DIR__ . '/php/Plugin.php';
+	require __DIR__ . '/php/Reprioritizer.php';
 	require __DIR__ . '/php/Settings.php';
 }
 

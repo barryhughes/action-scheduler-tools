@@ -47,17 +47,24 @@ actionSchedulerTools = actionSchedulerTools || {};
 					</div>
 			`;
 
-			if ( properties.type === 'range' ) {
-				controls += `
-					<div class="as-tools-enabled-disabled">
-						<label>
-							<input name="as-tools-${kebabKey}" data-settings-key="${configKey}" type="range" min="${escAttr( properties.min )}" max="${escAttr( properties.max )}" value="${escAttr( properties.value )}" />
-							<span class="echo-input-value disabled">0</span>
-						</label>					
-					</div>
-				`;
-			}
+			switch ( properties.type ) {
+				case 'range':
+					controls += `
+						<div class="as-tools-enabled-disabled">
+							<label>
+								<input name="as-tools-${kebabKey}" data-settings-key="${configKey}" type="range" min="${escAttr( properties.min )}" max="${escAttr( properties.max )}" value="${escAttr( properties.value )}" />
+								<span class="echo-input-value disabled">0</span>
+							</label>					
+						</div>
+					`;
+					break;
 
+				case 'prioritization-grid':
+					controls += `
+						<!-- Grid TBD -->
+					`;
+					break;
+			}
 			controls += '</section>';
 		}
 
@@ -68,21 +75,6 @@ actionSchedulerTools = actionSchedulerTools || {};
 				
 				<div class="as-tools-config-controls">
 					${controls}
-				</div>
-				
-				<div class="as-tools-reprioritize-rules">
-					<p>${escHtml( __( 'You can add rules here to identify actions by hook, group or both those things and set them to a specific priority. As with WordPress actions, lower numbers like 1 are regarded as a high priority than numbers such as 100. The default is 10.', 'action-scheduler-tools' ) )}</p>
-					
-					<table id="as-tools-reprioritization-grid">
-						<thead>
-							<tr>
-								<th>${escHtml( __( 'Hook to match', 'action-scheduler-tools' ) )}</th>
-								<th>${escHtml( __( 'Group to match', 'action-scheduler-tools' ) )}</th>
-								<th>${escHtml( __( 'Priority to match', 'action-scheduler-tools' ) )}</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-					</table>
 				</div>
 				
 				<section id="as-tools-save-tool-buttons-wrap">

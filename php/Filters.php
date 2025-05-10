@@ -33,6 +33,14 @@ readonly class Filters {
 		if ( $this->settings['auto_group_actions_enabled'] ?? false ) {
 			( new Autogrouper )->setup();
 		}
+
+		if ( $this->settings['auto_group_actions_enabled'] ?? false ) {
+			( new Autogrouper )->setup();
+		}
+
+		if ( $this->settings['reprioritize_actions_enabled'] ?? false ) {
+			( new Reprioritizer )->setup();
+		}
 	}
 
 	public function batch_size( mixed $default ): mixed {

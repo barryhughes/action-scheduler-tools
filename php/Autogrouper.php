@@ -11,30 +11,30 @@ class Autogrouper {
 	];
 
 	public function setup(): void {
-		add_filter( 'pre_as_enqueue_async_action',      [ $this, 'autogroup_async_action' ], 10, 6 );
-		add_filter( 'pre_as_schedule_single_action',    [ $this, 'autogroup_single_action' ], 10, 7 );
-		add_filter( 'pre_as_schedule_recurring_action', [ $this, 'autogroup_recurring_action' ], 10, 8 );
-		add_filter( 'pre_as_schedule_cron_action',      [ $this, 'autogroup_cron_action' ], 10, 8 );
+		add_filter( 'pre_as_enqueue_async_action',      [ $this, 'listen_for_async_action' ], 10, 6 );
+		add_filter( 'pre_as_schedule_single_action',    [ $this, 'listen_for_single_action' ], 10, 7 );
+		add_filter( 'pre_as_schedule_recurring_action', [ $this, 'listen_for_recurring_action' ], 10, 8 );
+		add_filter( 'pre_as_schedule_cron_action',      [ $this, 'listen_for_cron_action' ], 10, 8 );
 	}
 
-	public function autogroup_async_action( $short_circuit, $hook, $args, $group, $priority, $unique = null ) {
+	public function listen_for_async_action( $short_circuit, $hook, $args, $group, $priority, $unique = null ) {
 		$unique = $unique === null ? $this->discover_if_unique() : $unique;
-		return $this->autogroup_action( $short_circuit, 'as_enqueue_async_action', $hook, $args, $group, $priority, $unique );
+		return $this->modify_action( $short_circuit, 'as_enqueue_async_action', $hook, $args, $group, $priority, $unique );
 	}
 
-	public function autogroup_single_action( $short_circuit, $timestamp, $hook, $args, $group, $priority, $unique = null ) {
+	public function listen_for_single_action( $short_circuit, $timestamp, $hook, $args, $group, $priority, $unique = null ) {
 		$unique = $unique === null ? $this->discover_if_unique() : $unique;
-		return $this->autogroup_action( $short_circuit, 'as_schedule_single_action', $hook, $args, $group, $priority, $unique, $timestamp );
+		return $this->modify_action( $short_circuit, 'as_schedule_single_action', $hook, $args, $group, $priority, $unique, $timestamp );
 	}
 
-	public function autogroup_recurring_action( $short_circuit, $timestamp, $interval_in_seconds, $hook, $args, $group, $priority, $unique = null ) {
+	public function listen_for_recurring_action( $short_circuit, $timestamp, $interval_in_seconds, $hook, $args, $group, $priority, $unique = null ) {
 		$unique = $unique === null ? $this->discover_if_unique() : $unique;
-		return $this->autogroup_action( $short_circuit, 'as_schedule_recurring_action', $hook, $args, $group, $priority, $unique, $timestamp, $interval_in_seconds );
+		return $this->modify_action( $short_circuit, 'as_schedule_recurring_action', $hook, $args, $group, $priority, $unique, $timestamp, $interval_in_seconds );
 	}
 
-	public function autogroup_cron_action( $short_circuit, $timestamp, $schedule, $hook, $args, $group, $priority, $unique = null ) {
+	public function listen_for_cron_action( $short_circuit, $timestamp, $schedule, $hook, $args, $group, $priority, $unique = null ) {
 		$unique = $unique === null ? $this->discover_if_unique() : $unique;
-		return $this->autogroup_action( $short_circuit, 'as_schedule_cron_action', $hook, $args, $group, $priority, $unique, $timestamp, $schedule );
+		return $this->modify_action( $short_circuit, 'as_schedule_cron_action', $hook, $args, $group, $priority, $unique, $timestamp, $schedule );
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Autogrouper {
 		return false;
 	}
 
-	private function autogroup_action( $short_circuit, string $function, $hook, $args, $group, $priority, $unique = null, $timestamp = null, $scheduling = null ) {
+	protected function modify_action( $short_circuit, string $function, $hook, $args, $group, $priority, $unique = null, $timestamp = null, $scheduling = null ) {
 		static $lock = false;
 
 		if ( $lock === true || ! empty( $group ) ) {
