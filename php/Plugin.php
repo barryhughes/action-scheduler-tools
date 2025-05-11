@@ -92,7 +92,7 @@ class Plugin {
 	private function delete_finalized_actions(): bool {
 		$store   = ActionScheduler_Store::instance();
 		$actions = $store->query_actions( [
-			'per_page' => 40,
+			'per_page' => 100,
 			'status'   => [
 				ActionScheduler_Store::STATUS_COMPLETE,
 				ActionScheduler_Store::STATUS_CANCELED,
@@ -108,13 +108,12 @@ class Plugin {
 			}
 		}
 
-		return count( $actions ) === 40;
+		return count( $actions ) === 100;
 	}
 
 	private function count_remaining_actions_to_be_deleted(): int {
 		return (int) ActionScheduler_Store::instance()->query_actions(
 			[
-				'per_page' => 40,
 				'status'   => [
 					ActionScheduler_Store::STATUS_COMPLETE,
 					ActionScheduler_Store::STATUS_CANCELED,
