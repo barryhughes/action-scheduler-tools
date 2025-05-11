@@ -80,16 +80,17 @@ class Plugin {
 			return;
 		}
 
-		$this->delete_finalized_actions()
-			? wp_send_json_success( [ 'continue' => true ] )
-			: wp_send_json_success();
+		wp_send_json_success( [
+			'continue'  => $this->delete_finalized_actions(),
+			'remaining' => $this->count_remaining_actions_to_be_deleted(),
+		] );
 	}
 
 	/**
 	 * @return bool True if a further call is recommended, false if not.
 	 */
 	private function delete_finalized_actions(): bool {
-		$store = ActionScheduler_Store::instance();
+		$store   = ActionScheduler_Store::instance();
 		$actions = $store->query_actions( [
 			'per_page' => 40,
 			'status'   => [
@@ -108,6 +109,20 @@ class Plugin {
 		}
 
 		return count( $actions ) === 40;
+	}
+
+	private function count_remaining_actions_to_be_deleted(): int {
+		return (int) ActionScheduler_Store::instance()->query_actions(
+			[
+				'per_page' => 40,
+				'status'   => [
+					ActionScheduler_Store::STATUS_COMPLETE,
+					ActionScheduler_Store::STATUS_CANCELED,
+					ActionScheduler_Store::STATUS_FAILED,
+				],
+			],
+			'count'
+		);
 	}
 
 

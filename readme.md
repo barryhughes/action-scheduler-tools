@@ -31,10 +31,10 @@ With this plugin, you get a straightforward UI with which you can fine tune the 
   - Async lock duration control added
   - Logging control added
   - Auto-grouping for ungrouped actions
+  - Improve _delete all finalized actions_ UX, report on progress (otherwise, if lots of actions are candidates for deletion, it may appear as if the UI has frozen)
 - In progress:
   - Prioritization override by hook or by group
 - Other work we should really do:
-  - Improve _delete all finalized actions_ UX, report on progress (otherwise, if lots of actions are candidates for deletion, it may appear as if the UI has frozen)
   - Once we get happy with the range of functionality, some tidy-up is in order
   - Possibly as part of the tidy-up, improve escaping from within the JS/UI code
   - Re-think PHP 8.3 requirement

@@ -1,9 +1,9 @@
 actionSchedulerTools = actionSchedulerTools || {};
 
 ( function() {
-	const __              = ( text ) => wp.i18n.__( text );
-	const escAttr         = ( text ) => wp.escapeHtml.escapeAttribute( '' + text );
-	const escHtml         = ( text ) => wp.escapeHtml.escapeHTML( '' + text );
+	const __      = ( text ) => wp.i18n.__( text );
+	const escAttr = ( text ) => wp.escapeHtml.escapeAttribute( '' + text );
+	const escHtml = ( text ) => wp.escapeHtml.escapeHTML( '' + text );
 
 	let saveButton;
 	let saveFeedback;
@@ -213,7 +213,10 @@ actionSchedulerTools = actionSchedulerTools || {};
 					</div>
 				</section>
 				<section class="working hidden">
-					<p>${escHtml( __( 'Working&hellip;', 'action-scheduler-tools' ) ) }</p>
+					<p>
+						${escHtml( __( 'Working&hellip;', 'action-scheduler-tools' ) ) }
+						<span></span>
+					</p>
 				</section>
 			</dialog>
 		`
@@ -232,6 +235,8 @@ actionSchedulerTools = actionSchedulerTools || {};
 		show.addEventListener( 'click', () => deleteFinalized.showModal() );
 		close.addEventListener( 'click', () => { deleteFinalized.close() } );
 		proceed.addEventListener( 'click', async () => {
+			let remaining = -1;
+
 			choice.classList.add( 'hidden' );
 			working.classList.remove( 'hidden' );
 
@@ -250,6 +255,11 @@ actionSchedulerTools = actionSchedulerTools || {};
 				// The server may ask us to launch another request if there is more work to be done.
 				if ( response.status !== 200 || ! responseJson.data || ! responseJson.data.continue ) {
 					break;
+				}
+
+				if ( responseJson.data.remaining ) {
+					let remainingText = escHtml( __( '(%d remaining)', 'action-scheduler-tools' ) ).replace( '%d', responseJson.data.remaining );
+					deleteFinalized.querySelector( '.working p span' ).innerHTML = remainingText;
 				}
 			}
 
